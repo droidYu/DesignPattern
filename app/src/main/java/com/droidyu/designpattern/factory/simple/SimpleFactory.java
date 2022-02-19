@@ -6,6 +6,12 @@ package com.droidyu.designpattern.factory.simple;
 public class SimpleFactory {
     public static void main(String[] args) {
         PhoneFactory.createPhone("oppo").start();
+        PhoneFactory.createPhone("vivo").start();
+        PhoneFactory.createPhone("xiaomi").start();
+
+        AutoPhoneFactory.createPhone(OppoPhone.class).start();
+        AutoPhoneFactory.createPhone(VivoPhone.class).start();
+        AutoPhoneFactory.createPhone(XiaomiPhone.class).start();
     }
 }
 
@@ -48,5 +54,17 @@ class PhoneFactory{
                 break;
         }
         return phone;
+    }
+}
+
+class AutoPhoneFactory {
+    public static  <T extends Phone> T createPhone(Class<T> clazz) {
+        Phone phone = null;
+        try {
+            phone = (Phone) Class.forName(clazz.getName()).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (T) phone;
     }
 }

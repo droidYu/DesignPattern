@@ -1,25 +1,29 @@
 package com.droidyu.designpattern.factory.method;
 
+import java.util.HashMap;
+
 /**
  * 工厂方法模式
  */
 public class FactoryMethod {
     public static void main(String[] args) {
-        PhoneFactory factory = new RealPhoneFactory();
 
-        OppoPhone oppoPhone = factory.createPhone(OppoPhone.class);
+        Phone oppoPhone = PhoneFactoryFactory.getFactory(PhoneType.oppo).createPhone();
         oppoPhone.start();
 
-        VivoPhone vivoPhone = factory.createPhone(VivoPhone.class);
+        Phone vivoPhone = PhoneFactoryFactory.getFactory(PhoneType.vivo).createPhone();
         vivoPhone.start();
 
-        XiaomiPhone xiaomiPhone = factory.createPhone(XiaomiPhone.class);
+        Phone xiaomiPhone = PhoneFactoryFactory.getFactory(PhoneType.xiaomi).createPhone();
         xiaomiPhone.start();
-
     }
 }
 
-abstract class Phone{
+enum PhoneType {
+    oppo, vivo, xiaomi
+}
+
+abstract class Phone {
     public abstract void start();
 }
 
@@ -36,6 +40,7 @@ class VivoPhone extends Phone {
         System.out.println("VIVO start");
     }
 }
+
 class XiaomiPhone extends Phone {
     @Override
     public void start() {
@@ -43,20 +48,44 @@ class XiaomiPhone extends Phone {
     }
 }
 
-abstract class PhoneFactory{
-    public abstract <T extends Phone> T createPhone(Class<T> clz);
+abstract class PhoneFactory {
+    public abstract Phone createPhone();
 }
 
-class RealPhoneFactory extends PhoneFactory {
+class OppoFactory extends PhoneFactory {
     @Override
-    public <T extends Phone> T createPhone(Class<T> clz) {
-        Phone phone = null;
-        String className = clz.getName();
-        try {
-            phone = (Phone) Class.forName(className).newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return (T) phone;
+    public Phone createPhone() {
+        return new OppoPhone();
     }
 }
+
+class VivoFactory extends PhoneFactory {
+    @Override
+    public Phone createPhone() {
+        return new VivoPhone();
+    }
+}
+
+class XiaomiFactory extends PhoneFactory {
+    @Override
+    public Phone createPhone() {
+        return new XiaomiPhone();
+    }
+}
+
+class PhoneFactoryFactory {
+    static HashMap<PhoneType, PhoneFactory> map = new HashMap<>();
+
+    static {
+        map.put(PhoneType.oppo, new OppoFactory());
+        map.put(PhoneType.vivo, new VivoFactory());
+        map.put(PhoneType.xiaomi, new XiaomiFactory());
+    }
+
+    public static PhoneFactory getFactory(PhoneType type) {
+        return map.get(type);
+    }
+}
+
+
+
