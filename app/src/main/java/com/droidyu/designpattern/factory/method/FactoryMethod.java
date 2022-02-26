@@ -8,20 +8,26 @@ import java.util.HashMap;
 public class FactoryMethod {
     public static void main(String[] args) {
 
-        Phone oppoPhone = PhoneFactoryFactory.getFactory(PhoneType.oppo).createPhone();
+//        Phone oppoPhone = new OppoFactory().createPhone();
+//        oppoPhone.start();
+//
+//        Phone vivoPhone = new VivoFactory().createPhone();
+//        vivoPhone.start();
+//
+//        Phone xiaomiPhone = new XiaomiFactory().createPhone();
+//        xiaomiPhone.start();
+
+        Phone oppoPhone = PhoneFactoryFactory.getFactory(PhoneFactoryFactory.PhoneType.oppo).createPhone();
         oppoPhone.start();
 
-        Phone vivoPhone = PhoneFactoryFactory.getFactory(PhoneType.vivo).createPhone();
+        Phone vivoPhone = PhoneFactoryFactory.getFactory(PhoneFactoryFactory.PhoneType.vivo).createPhone();
         vivoPhone.start();
 
-        Phone xiaomiPhone = PhoneFactoryFactory.getFactory(PhoneType.xiaomi).createPhone();
+        Phone xiaomiPhone = PhoneFactoryFactory.getFactory(PhoneFactoryFactory.PhoneType.xiaomi).createPhone();
         xiaomiPhone.start();
     }
 }
 
-enum PhoneType {
-    oppo, vivo, xiaomi
-}
 
 abstract class Phone {
     public abstract void start();
@@ -74,6 +80,11 @@ class XiaomiFactory extends PhoneFactory {
 }
 
 class PhoneFactoryFactory {
+
+    enum PhoneType {
+        oppo, vivo, xiaomi
+    }
+
     static HashMap<PhoneType, PhoneFactory> map = new HashMap<>();
 
     static {
